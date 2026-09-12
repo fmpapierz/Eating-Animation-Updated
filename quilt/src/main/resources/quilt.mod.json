@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "group": "ru.tpsd.eatinganimationmod",
+    "id": "eatinganimationid",
+    "version": "${version}",
+    "metadata": {
+      "name": "Eating Animation",
+      "description": "Animated food and drinks. Unofficial Minecraft 26.2 multiloader port.",
+      "contributors": {
+        "hooneybAdegrs": "Author"
+      },
+      "contact": {
+        "homepage": "https://github.com/fmpapierz/Eating-Animation-Updated",
+        "sources": "https://github.com/fmpapierz/Eating-Animation-Updated",
+        "issues": "https://github.com/fmpapierz/Eating-Animation-Updated/issues"
+      },
+      "license": "MIT",
+      "icon": "assets/eatinganimationid/eatinganimationicon.png"
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "versions": ">=0.30.1"
+      },
+      {
+        "id": "minecraft",
+        "versions": "26.2"
+      },
+      {
+        "id": "java",
+        "versions": ">=25"
+      }
+    ]
+  },
+  "minecraft": {
+    "environment": "client"
+  },
+  "mixin": "eatinganimation.mixins.json"
+}

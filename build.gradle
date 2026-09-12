@@ -1,0 +1,74 @@
+plugins { id 'base' }
+allprojects {
+    group = 'ru.tpsd.eatinganimationmod'
+    version = "${mod_version}+mc${minecraft_version}"
+}
+subprojects {
+    apply plugin: 'java-library'
+    java {
+        toolchain.languageVersion = JavaLanguageVersion.of(25)
+        withSourcesJar()
+    }
+    repositories { mavenCentral() }
+    configurations.matching { it.name.endsWith('Classpath') }.configureEach {
+        attributes.attribute(org.gradle.api.attributes.java.TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
+    }
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        // Forge Mixin supports JAVA_21; the game still requires JDK 25.
+        options.release = 21
+    }
+    base.archivesName = "eating-animation-${name}"
+    if (name != 'common') {
+        sourceSets.main {
+            java.srcDir rootProject.file('common/src/main/java')
+            resources.srcDir rootProject.file('common/src/main/resources')
+        }
+    }
+    tasks.named('processResources') {
+        inputs.property 'version', project.version
+        filesMatching(['fabric.mod.json', 'quilt.mod.json', 'META-INF/mods.toml', 'META-INF/neoforge.mods.toml']) {
+            expand version: project.version
+        }
+        doLast {
+            def pack = new File(destinationDir, 'resourcepacks/supporteatinganimation')
+            def index = fileTree(pack).files.collect { pack.toPath().relativize(it.toPath()).toString().replace(File.separator, '/') }
+                .findAll { it != 'resources.index' }.sort()
+            new File(pack, 'resources.index').text = index.join('\n') + '\n'
+            def vanilla = fileTree(new File(destinationDir, 'assets/minecraft/items')).files
+                .collect { 'assets/minecraft/items/' + it.name }.sort()
+            new File(destinationDir, 'eatinganimation-items.index').text = vanilla.join('\n') + '\n'
+        }
+    }
+    tasks.withType(Jar).configureEach {
+        from(rootProject.file('LICENSE'))
+        preserveFileTimestamps = false
+        reproducibleFileOrder = true
+    }
+    if (name != 'common' && providers.gradleProperty('smokeTest').isPresent()) {
+        sourceSets.main.java.srcDirs rootProject.file('smoke/src/checks/java'), rootProject.file('smoke/src/mixin/java')
+        tasks.named('processResources') {
+            doLast {
+                def configFile = new File(destinationDir, 'eatinganimation.mixins.json')
+                def config = new groovy.json.JsonSlurper().parse(configFile)
+                config.client.add(project.name == 'neoforge' ? 'NeoClientSmokeMixin' : 'ClientSmokeMixin')
+                configFile.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(config))
+            }
+        }
+        tasks.withType(Jar).configureEach {
+            doFirst { throw new GradleException('Build release JARs without -PsmokeTest.') }
+        }
+    }
+    tasks.named('processResources') { inputs.property 'smokeTest', providers.gradleProperty('smokeTest').isPresent() }
+}
+tasks.register('collectJars', Sync) {
+    group = 'build'
+    description = 'Build the four installable loader JARs into build/libs.'
+    ['fabric', 'forge', 'neoforge', 'quilt'].each { loader ->
+        dependsOn ":${loader}:build"
+        from(project(":${loader}").tasks.named('jar'))
+    }
+    into layout.buildDirectory.dir('libs')
+}
+tasks.named('build') { dependsOn 'collectJars', ':common:check' }
+tasks.named('clean') { dependsOn subprojects.collect { "${it.path}:clean" } }

@@ -1,0 +1,9 @@
+plugins { id 'net.neoforged.moddev' version '2.0.146' }
+neoForge {
+    version = neoforge_version
+    runs {
+        client { client() }
+        server { server(); programArgument '--nogui' }
+    }
+    mods { eatinganimationid { sourceSet sourceSets.main } }
+}

@@ -1,0 +1,25 @@
+modLoader="javafml"
+loaderVersion="[65,)"
+license="MIT"
+issueTrackerURL="https://github.com/fmpapierz/Eating-Animation-Updated/issues"
+[[mods]]
+modId="eatinganimationid"
+version="${version}"
+displayName="Eating Animation"
+displayURL="https://github.com/fmpapierz/Eating-Animation-Updated"
+authors="hooneybAdegrs"
+logoFile="assets/eatinganimationid/eatinganimationicon.png"
+displayTest="IGNORE_ALL_VERSION"
+description='''Animated food and drinks. Unofficial Minecraft 26.2 multiloader port.'''
+[[dependencies.eatinganimationid]]
+modId="forge"
+mandatory=true
+versionRange="[65.1.3,66)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.eatinganimationid]]
+modId="minecraft"
+mandatory=true
+versionRange="[26.2]"
+ordering="NONE"
+side="BOTH"

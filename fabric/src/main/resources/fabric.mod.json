@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "eatinganimationid",
+  "version": "${version}",
+  "name": "Eating Animation",
+  "description": "Animated food and drinks. Unofficial Minecraft 26.2 multiloader port.",
+  "authors": [
+    "hooneybAdegrs"
+  ],
+  "contact": {
+    "homepage": "https://github.com/fmpapierz/Eating-Animation-Updated",
+    "sources": "https://github.com/fmpapierz/Eating-Animation-Updated",
+    "issues": "https://github.com/fmpapierz/Eating-Animation-Updated/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/eatinganimationid/eatinganimationicon.png",
+  "environment": "client",
+  "mixins": [
+    "eatinganimation.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "26.2",
+    "java": ">=25"
+  }
+}
