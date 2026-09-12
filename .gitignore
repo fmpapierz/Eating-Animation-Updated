@@ -37,3 +37,7 @@ run/
 *.hprof
 .porting/
 __pycache__/
+
+# Runtime logs
+logs/
+*.log.gz
